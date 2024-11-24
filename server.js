@@ -1,4 +1,7 @@
 import express from "express";
+import conectarAoBanco from "./src/config/dbConfig.js";
+await conectarAoBanco(process.env.STRING_CONEXAO)
+console.log(process.env.STRING_CONEXAO)
 
 const posts = [
     { id: 1, descricao: "Uma foto teste", imagem: "https://placecats.com/millie/300/150" },
@@ -19,10 +22,10 @@ app.listen(3000, () => {
 });
 
 app.get("/posts", (req, res) => {
-   // res.status (200).json (posts);
-//app.get("/api", (req, resp) => {
-    res.status (200).send("Ubiraci seja bém vindo a imerção da Alura!");
-   //});
+    res.status (200).json (posts);
+app.get("/api", (req, resp) => {
+   
+   });
 });
 
 function buscarPostPorID(id) {
@@ -32,7 +35,7 @@ function buscarPostPorID(id) {
     });
 }
 
-app.get("/posts/:id", (req, res) => {
+app.get("/posts/:id", (req, res) => {  
     const index = buscarPostPorID(req.params.id);
     res.status (200).json(posts[index]);
 });

@@ -3,3 +3,5 @@ key-api.txt
 ubira.domingos@gmail.com
 *.ssh
 .pub
+*.env
+.env
