@@ -7,3 +7,9 @@ export async function getTodosposts() {
     const colecao = db.collection("posts");
     return colecao.find().toArray();
 }
+
+export async function criarPost(novoPost) {
+    const db = conexao.db("backServer");
+    const colecao = db.collection("posts");
+    return colecao.insertOne(novoPost);
+}
