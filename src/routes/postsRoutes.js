@@ -1,24 +1,80 @@
-import express from "express"; // Importa o Express para criar o servidor
-import multer from "multer"; // Importa o Multer para lidar com uploads
-import { listarPosts, postarNovoPost, uploadImagem } from "../controllers/postsController.js"; // Importa as funções controladoras
+// import express from "express"; // Importa o framework Express para criar a aplicação web
+// import multer from "multer"; // Importa o Multer para lidar com uploads de arquivos
+// import { listarPosts, postarNovoPost, uploadImagem } from "../controllers/postsController.js"; // Importa as funções controladoras para lidar com a lógica dos posts
 
-// Configura o Multer para armazenar imagens enviadas
+// // Configura o armazenamento do Multer para uploads de imagens
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     // Especifica o diretório para armazenar as imagens enviadas
+//     cb(null, 'uploads/'); // Substitua por seu caminho de upload desejado
+//   },
+//   filename: function (req, file, cb) {
+//     // Mantém o nome original do arquivo por simplicidade
+//     cb(null, file.originalname); // Considere usar uma estratégia de geração de nomes únicos para produção
+//   }
+// });
+
+// // Cria uma instância do middleware Multer
+// const upload = multer({ storage: storage });
+
+// // Define as rotas usando o objeto Express app
+// const routes = (app) => {
+//   // Permite que o servidor interprete corpos de requisições no formato JSON
+//   app.use(express.json());
+
+//   // Rota para recuperar uma lista de todos os posts
+//   app.get("/posts", listarPosts); // Chama a função controladora apropriada
+
+//   // Rota para criar um novo post
+//   app.post("/posts", postarNovoPost); // Chama a função controladora para criação de posts
+
+//   // Rota para upload de imagens (assumindo uma única imagem chamada "imagem")
+//   app.post("/upload", upload.single("imagem"), uploadImagem); // Chama a função controladora para processamento da imagem
+// };
+
+// export default routes;
+
+import express from "express"; // Importa o framework Express para criar a aplicação web
+import multer from "multer"; // Importa o Multer para lidar com uploads de arquivos
+import { listarPosts, postarNovoPost, uploadImagem } from "../controllers/postsController.js"; // Importa as funções controladoras para lidar com a lógica dos posts
+
+// Configura o armazenamento do Multer para uploads de imagens
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/'); // Define a pasta onde as imagens serão salvas
+        // Especifica o diretório para armazenar as imagens enviadas
+        cb(null, 'uploads/'); // Substitua por seu caminho de upload desejado
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname); // Mantém o nome original do arquivo
+        // Mantém o nome original do arquivo por simplicidade
+        cb(null, file.originalname); // Considere usar uma estratégia de geração de nomes únicos para produção
     }
 });
 
-const upload = multer({ dest: "./uploads" , storage}); // Cria uma instância do Multer com a configuração definida
+// Cria uma instância do middleware Multer
+const upload = multer({ storage: storage });
 
+// Define as rotas usando o objeto Express app
 const routes = (app) => {
-    app.use(express.json()); // Permite que o Express interprete corpos de requisições no formato JSON
-    app.get("/posts", listarPosts); // Endpoint para listar todos os posts
-    app.post("/posts", postarNovoPost); // Endpoint para criar um novo post
-    app.post("/upload", upload.single("imagem"), uploadImagem); // Endpoint para fazer upload de uma imagem
+    // Permite que o servidor interprete corpos de requisições no formato JSON
+    app.use(express.json());
+
+    // Rota para recuperar uma lista de todos os posts
+    app.get("/posts", (req, res) => {
+        console.log('Rota GET /posts chamada'); // Log de rota chamada
+        listarPosts(req, res);
+    });
+
+    // Rota para criar um novo post
+    app.post("/posts", (req, res) => {
+        console.log('Rota POST /posts chamada'); // Log de rota chamada
+        postarNovoPost(req, res);
+    });
+
+    // Rota para upload de imagens (assumindo uma única imagem chamada "imagem")
+    app.post("/upload", upload.single("imagem"), (req, res) => {
+        console.log('Rota POST /upload chamada'); // Log de rota chamada
+        uploadImagem(req, res);
+    });
 };
 
-export default routes; // Exporta as rotas para serem usadas no servidor principal
+export default routes;
